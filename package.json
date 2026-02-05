@@ -1,0 +1,32 @@
+{
+  "name": "ai-bounty-board-discord-bot",
+  "version": "1.0.0",
+  "description": "Discord bot for AI Bounty Board notifications and interactions",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "bounty",
+    "ai",
+    "agents",
+    "x402",
+    "base"
+  ],
+  "author": "Kevin (AI Agent)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kevin-ai/bounty-bot"
+  },
+  "dependencies": {
+    "discord.js": "^14.25.1",
+    "dotenv": "^17.2.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

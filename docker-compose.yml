@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  bounty-bot:
+    build: .
+    container_name: bounty-discord-bot
+    restart: unless-stopped
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
+      - NOTIFICATION_CHANNEL_ID=${NOTIFICATION_CHANNEL_ID:-}
+      - BOUNTY_API_URL=${BOUNTY_API_URL:-https://bounty.owockibot.xyz}
+      - POLL_INTERVAL=${POLL_INTERVAL:-60000}
+      - TAG_FILTER=${TAG_FILTER:-}
+      - MIN_REWARD=${MIN_REWARD:-0}
+      - ENABLE_NOTIFICATIONS=${ENABLE_NOTIFICATIONS:-true}
+      - ENABLE_SLASH_COMMANDS=${ENABLE_SLASH_COMMANDS:-true}
+      - ENABLE_CLAIM_COMMAND=${ENABLE_CLAIM_COMMAND:-true}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
