@@ -10,7 +10,7 @@
  * - Tag filtering and configurable notifications
  * - Rich embeds with bounty details
  * 
- * @author Kevin (AI Agent)
+ * @author kevi-ai
  * @license MIT
  * @see https://github.com/kevi-ai/bounty-discord-bot
  */
@@ -39,103 +39,117 @@ let tracker = null;
  */
 async function registerCommands() {
   if (!config.features.slashCommands) {
-    console.log('Slash commands disabled');
+    console.log('⏭️ Slash commands disabled');
     return;
   }
 
   const rest = new REST({ version: '10' }).setToken(config.discord.token);
 
   try {
-    console.log('Registering slash commands...');
+    console.log('📝 Registering slash commands...');
     
     await rest.put(
       Routes.applicationCommands(config.discord.clientId),
       { body: commands.map(c => c.toJSON()) }
     );
     
-    console.log(`Registered ${commands.length} slash commands`);
+    console.log(`✅ Registered ${commands.length} slash commands`);
   } catch (error) {
-    console.error('Failed to register commands:', error);
+    console.error('❌ Failed to register commands:', error);
   }
 }
 
+/**
+ * Handle slash command interactions
+ */
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   const handler = handlers[interaction.commandName];
   
   if (!handler) {
-    console.warn(`Unknown command: ${interaction.commandName}`);
+    console.warn(`⚠️ Unknown command: ${interaction.commandName}`);
     return;
   }
 
   try {
     await handler(interaction);
   } catch (error) {
-    console.error(`Command error (${interaction.commandName}):`, error);
+    console.error(`❌ Command error (${interaction.commandName}):`, error);
     
     const reply = interaction.deferred || interaction.replied
       ? interaction.editReply.bind(interaction)
       : interaction.reply.bind(interaction);
     
     await reply({
-      content: 'An error occurred while processing your command.',
+      content: '❌ An error occurred while processing your command.',
       ephemeral: true,
     }).catch(() => {});
   }
 });
 
+/**
+ * Bot ready handler
+ */
 client.once('ready', async () => {
   console.log('');
-  console.log('AI Bounty Board Discord Bot v1.0.0');
+  console.log('╔════════════════════════════════════════════════════╗');
+  console.log('║        AI Bounty Board Discord Bot v1.0.0          ║');
+  console.log('╚════════════════════════════════════════════════════╝');
   console.log('');
-  console.log(`Logged in as ${client.user.tag}`);
-  console.log(`API: ${config.api.baseUrl}`);
-  console.log(`Poll interval: ${config.polling.interval}ms`);
+  console.log(`🤖 Logged in as ${client.user.tag}`);
+  console.log(`📡 API: ${config.api.baseUrl}`);
+  console.log(`⏱️ Poll interval: ${config.polling.interval}ms`);
   
   if (config.filters.tags.length > 0) {
-    console.log(`Tag filter: ${config.filters.tags.join(', ')}`);
+    console.log(`🏷️ Tag filter: ${config.filters.tags.join(', ')}`);
   }
   
   if (config.discord.notificationChannel) {
-    console.log(`Notifications: #${config.discord.notificationChannel}`);
+    console.log(`📢 Notifications: #${config.discord.notificationChannel}`);
   } else {
-    console.log('Notifications: Not configured (use /setchannel)');
+    console.log('📢 Notifications: Not configured (use /setchannel)');
   }
   
   console.log('');
 
+  // Register slash commands
   await registerCommands();
 
+  // Start bounty tracker
   tracker = new BountyTracker(client);
   tracker.start();
 
   console.log('');
-  console.log('Bot is ready and monitoring bounties!');
+  console.log('✅ Bot is ready and monitoring bounties!');
   console.log('');
 });
 
+/**
+ * Error handlers
+ */
 client.on('error', (error) => {
-  console.error('Discord client error:', error);
+  console.error('❌ Discord client error:', error);
 });
 
 process.on('unhandledRejection', (error) => {
-  console.error('Unhandled promise rejection:', error);
+  console.error('❌ Unhandled promise rejection:', error);
 });
 
 process.on('SIGINT', () => {
-  console.log('Shutting down...');
+  console.log('\n🛑 Shutting down...');
   if (tracker) tracker.stop();
   client.destroy();
   process.exit(0);
 });
 
 process.on('SIGTERM', () => {
-  console.log('Received SIGTERM, shutting down...');
+  console.log('\n🛑 Received SIGTERM, shutting down...');
   if (tracker) tracker.stop();
   client.destroy();
   process.exit(0);
 });
 
-console.log('Starting AI Bounty Board Discord Bot...');
+// Start the bot
+console.log('🚀 Starting AI Bounty Board Discord Bot...');
 client.login(config.discord.token);
