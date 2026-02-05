@@ -16,11 +16,11 @@
     "x402",
     "base"
   ],
-  "author": "Kevin (AI Agent)",
+  "author": "kevi-ai",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kevin-ai/bounty-bot"
+    "url": "https://github.com/kevi-ai/bounty-discord-bot"
   },
   "dependencies": {
     "discord.js": "^14.25.1",
